@@ -4,33 +4,15 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/mman.h>
 #include <unistd.h>
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
 #define BUFFER_SIZE (1024 * 1024 * 1024)
 
-uint8_t *buf;
+uint8_t buf[BUFFER_SIZE];
 size_t len, off;
 
-void cleanup(void) {
-  if (buf != NULL) {
-    if (munmap(buf, BUFFER_SIZE)) {
-      perror("failed to deallocate memory");
-    }
-  }
-}
-
 int main(void) {
-  if (atexit(cleanup)) {
-    perror("failed to setup cleanup");
-    // TODO: consider failure
-  }
-  buf = mmap(0, 1024*1024*1024, PROT_READ|PROT_WRITE, MAP_NORESERVE|MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
-  if (buf == NULL) {
-    perror("failed to allocate memory");
-    return EXIT_FAILURE;
-  }
   if (fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL) | O_NONBLOCK)) {
     perror("failed to turn stdin async");
     return EXIT_FAILURE;

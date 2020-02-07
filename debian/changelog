@@ -1,6 +1,7 @@
 blobomnom (0.2.0) UNRELEASED; urgency=medium
 
   * Try to reset offset if buffer empty.
+  * Use statically allocated buffer.
 
  -- Michał Sidor <public+dpkg@meekchopp.es>  Fri, 07 Feb 2020 12:13:04 +0100
 
