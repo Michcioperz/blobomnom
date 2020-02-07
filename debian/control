@@ -8,10 +8,11 @@ Homepage: https://git.sr.ht/~michcioperz/blobomnom
 Vcs-Browser: https://git.sr.ht/~michcioperz/blobomnom
 Vcs-Git: https://git.sr.ht/~michcioperz/blobomnom
 
-Package: blobomnom
+Package: blobomnom-static
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: pipe buffer utility
+Provides: blobomnom
+Description: pipe buffer utility (static binary)
  blobomnom buffers up to 1 GiB at a time of standard input
  and drains it into standard output. The key feature is the
  1 GiB buffer.
