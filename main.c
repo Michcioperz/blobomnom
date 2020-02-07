@@ -44,6 +44,9 @@ int main(void) {
     { .fd = STDIN_FILENO, .events = POLLIN, .revents = 0 },
   };
   while (fds[0].fd >= 0 && (fds[1].fd >= 0 || len > 0)) {
+    if (len == 0) {
+      off = 0;
+    }
     fds[0].revents = 0;
     fds[1].revents = 0;
     fds[0].events = len > 0 ? POLLOUT : 0;

@@ -1,3 +1,9 @@
+blobomnom (0.2.0) UNRELEASED; urgency=medium
+
+  * Try to reset offset if buffer empty.
+
+ -- Michał Sidor <public+dpkg@meekchopp.es>  Fri, 07 Feb 2020 12:13:04 +0100
+
 blobomnom (0.1.0) unstable; urgency=medium
 
   * Initial Release.
