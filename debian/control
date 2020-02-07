@@ -1,0 +1,23 @@
+Source: blobomnom
+Section: utils
+Priority: optional
+Maintainer: Michał Sidor <public+dpkg@meekchopp.es>
+Build-Depends: debhelper (>= 11), musl-dev, musl-tools
+Standards-Version: 4.1.3
+Homepage: https://git.sr.ht/~michcioperz/blobomnom
+Vcs-Browser: https://git.sr.ht/~michcioperz/blobomnom
+Vcs-Git: https://git.sr.ht/~michcioperz/blobomnom
+
+Package: blobomnom
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: pipe buffer utility
+ blobomnom buffers up to 1 GiB at a time of standard input
+ and drains it into standard output. The key feature is the
+ 1 GiB buffer.
+ .
+ The main use case it was designed for was `curl .../x.tar.xz | tar xJf`
+ which is a combination that is CPU, network and IO bound.
+ blobomnom allows network download to proceed efficiently and
+ allows curl to exit early once the download is complete, while
+ tar can take its time in peace.

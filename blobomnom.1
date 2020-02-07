@@ -1,0 +1,40 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" (C) Copyright 2020 Michał Sidor <public+dpkg@meekchopp.es>,
+.\"
+.TH blobomnom 1 "February  7 2020"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+blobomnom \- pipe buffering utility
+.SH SYNOPSIS
+.B blobomnom
+.SH DESCRIPTION
+.B blobomnom
+buffers up to 1 GiB at a time of standard input and drains it into standard output.
+.br
+The key feature is the 1 GiB buffer.
+.PP
+The main use case it was designed for was
+.B curl .../x.tar.xz | tar xJf
+which is a combination that is CPU, network and IO bound.
+.br
+.B blobomnom
+allows network download to proceed efficiently and allows
+.B curl
+to exit early once the download is complete, while
+.B tar
+can take its time in peace.
+.SH OPTIONS
+This program takes no options.
+.SH SEE ALSO
+.BR cat (1).
