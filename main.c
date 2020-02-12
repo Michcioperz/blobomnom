@@ -1,6 +1,10 @@
 #define _DEFAULT_SOURCE
+#define _POSIX_C_SOURCE 200809L
+#include <errno.h>
 #include <fcntl.h>
 #include <poll.h>
+#include <signal.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,7 +14,12 @@
 #define BUFFER_SIZE (1024 * 1024 * 1024)
 
 uint8_t buf[BUFFER_SIZE];
-size_t len, off;
+size_t len, maxlen, off;
+bool info_requested = false;
+
+static void sighandler(int sig) {
+  info_requested = true;
+}
 
 int main(void) {
   if (fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL) | O_NONBLOCK)) {
@@ -21,6 +30,14 @@ int main(void) {
     perror("failed to turn stdout async");
     return EXIT_FAILURE;
   }
+
+  struct sigaction sa;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_handler = sighandler;
+  sa.sa_flags = 0;
+  if (sigaction(SIGUSR1, &sa, NULL))
+    perror("failed to register SIGUSR1 handler (continuing nonetheless)");
+
   struct pollfd fds[] = {
     { .fd = STDOUT_FILENO, .events = 0, .revents = 0 },
     { .fd = STDIN_FILENO, .events = POLLIN, .revents = 0 },
@@ -33,9 +50,14 @@ int main(void) {
     fds[1].revents = 0;
     fds[0].events = len > 0 ? POLLOUT : 0;
     fds[1].events = len < BUFFER_SIZE ? POLLIN : 0;
-    if (poll(fds, 2, -1) < 0) {
+    int res = poll(fds, 2, -1);
+    if (res < 0 && errno != EINTR) {
       perror("failed to poll");
       return EXIT_FAILURE;
+    }
+    if (info_requested) {
+      info_requested = false;
+      fprintf(stderr, "blobomnom info\tcur: %zu\tmax: %zu\n", len, maxlen);
     }
     if (fds[0].revents & POLLERR || fds[1].revents & POLLERR) {
       return EXIT_FAILURE;
@@ -68,6 +90,8 @@ int main(void) {
         fds[1].fd = -1;
       } else {
         len += readen;
+        if (maxlen < len)
+          maxlen = len;
       }
     }
     if (fds[1].revents & POLLHUP) {
